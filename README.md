@@ -17,3 +17,8 @@ get_graph  , shortest_path , centerPoint , TSP , save_to_json , load_from_json ,
 More information can be seen on Wiki.<br>
 <br>
 Below are the some of the graphs we have created using our plotting function:<br>
+<br>
+<br>
+* **Examples from our graph:**<br>
+![image](https://user-images.githubusercontent.com/80401712/147609716-b68bc295-d20b-49ed-a022-56c112992721.png)<br>
+![image](https://user-images.githubusercontent.com/80401712/147609729-203aa0be-030c-488a-8ea0-5ae4a511d249.png)<br>
