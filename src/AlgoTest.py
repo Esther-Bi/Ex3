@@ -110,5 +110,6 @@ class MyTestCase(unittest.TestCase):
     def test_TSP(self):
         self.assertEqual(g_algo.TSP([2, 1, 4, 0]), [0, 2, 1, 4], 7)
 
+
 if __name__ == '__main__':
     unittest.main()

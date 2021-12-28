@@ -93,27 +93,34 @@ class GraphAlgo(GraphAlgoInterface):
     def TSP(self, node_lst: List[int]) -> (List[int], float):
         if self.graph.mc > 0:
             self.connected = self.is_connected()
-        if self.connected:
-            ans = []
-            dist_all = 0
-            i_was_changed = False
-            node_i = node_lst[0]
-            next = -1
-            while node_lst:
-                short_path = float('inf')
-                next = -1
-                dist = 0
-                for node_j in node_lst:
-                    if node_j != node_i:
-                        if not i_was_changed:
-                            self.dijkstra(node_i)
-                            i_was_changed = True
-                        dist = self.graph.nodes[node_j].weight
-                        if short_path >= dist:
-                            short_path = dist
-                            next = node_j
-                dist_all = dist_all + dist
+        if not self.connected:
+            for node_i1 in node_lst:
+                self.dijkstra(node_i1)
+                for node_i2 in node_lst:
+                    if self.graph.nodes[node_i2].father is float('inf'):
+                        return [], float('inf')
 
+        ans = []
+        dist_all = 0
+        i_was_changed = False
+        node_i = node_lst[0]
+        next = -1
+        last_n = -1
+        while node_lst:
+            short_path = float('inf')
+            next = -1
+            dist = 0
+            for node_j in node_lst:
+                if node_j != node_i:
+                    if not i_was_changed:
+                        self.dijkstra(node_i)
+                        i_was_changed = True
+                    dist = self.graph.nodes[node_j].weight
+                    if short_path >= dist:
+                        short_path = dist
+                        next = node_j
+            if len(node_lst) > 1:
+                dist_all = dist_all + short_path
                 path = []
                 path.insert(0, self.graph.nodes[next].father)
                 while path[0] != node_i:
@@ -121,65 +128,13 @@ class GraphAlgo(GraphAlgoInterface):
                     path.insert(0, key)
 
                 ans.extend(path)
-                node_lst.remove(node_i)
-                node_i = next
-                i_was_changed = False
-            ans.append(next)
-            return ans, dist_all
-
-        if not self.connected:
-            return self.tsp_not_connected(node_lst)
-
-    # def TSP(self, node_lst: List[int]) -> (List[int], float):
-    #     if self.graph.mc > 0:
-    #         self.connected = self.is_connected()
-    #     if not self.connected:
-    #         for node_i1 in node_lst:
-    #             self.dijkstra(node_i1)
-    #             for node_i2 in node_lst:
-    #                 if self.graph.nodes[node_i2].father is float('inf'):
-    #                     return [], float('inf')
-    #
-    #     ans = []
-    #     dist_all = 0
-    #     i_was_changed = False
-    #     node_i = node_lst[0]
-    #     next = -1
-    #     while node_lst:
-    #         short_path = float('inf')
-    #         next = -1
-    #         dist = 0
-    #         for node_j in node_lst:
-    #             if node_j != node_i:
-    #                 if not i_was_changed:
-    #                     self.dijkstra(node_i)
-    #                     i_was_changed = True
-    #                 dist = self.graph.nodes[node_j].weight
-    #                 if short_path >= dist:
-    #                     short_path = dist
-    #                     next = node_j
-    #         dist_all = dist_all + dist
-    #
-    #         path = []
-    #         path.insert(0, self.graph.nodes[next].father)
-    #         while path[0] != node_i:
-    #             key = self.graph.nodes[path[0]].father
-    #             path.insert(0, key)
-    #
-    #         ans.extend(path)
-    #         node_lst.remove(node_i)
-    #         node_i = next
-    #         i_was_changed = False
-    #     ans.append(next)
-    #     return ans, dist_all
-
-    def tsp_not_connected(self, node_lst: List[int]) -> (List[int], float):
-        for node_i in node_lst:
-            self.dijkstra(node_i)
-            for node_i in node_lst:
-                if self.graph.nodes[node_i].father is float('inf'):
-                    return [], float('inf')
-        return [], float('inf')
+            if len(node_lst) == 1:
+                last_n = node_lst[0]
+            node_lst.remove(node_i)
+            node_i = next
+            i_was_changed = False
+        ans.append(last_n)
+        return ans, dist_all
 
     def centerPoint(self) -> (int, float):
         if self.graph.mc > 0:
