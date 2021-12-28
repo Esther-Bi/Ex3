@@ -41,7 +41,10 @@ class DiGraph(GraphInterface):
             print("String could not be converted to JSON")
 
     def __str__(self):
-        return str(self.nodes)
+        return f"Graph: |V|={self.v_size()}, |E|={self.e_size()}"
+
+    def __repr__(self):
+        return f"Graph: |V|={self.v_size()}, |E|={self.e_size()}"
 
     def v_size(self) -> int:
         return len(self.nodes)

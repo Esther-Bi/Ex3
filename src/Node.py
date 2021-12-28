@@ -12,13 +12,10 @@ class Node:
         self.visited = False
 
     def __str__(self):
-        return f'id: {self.id}, x: {self.x}, y: {self.y}.'
+        return f'{self.id}: |edges_out| {len(self.edge_out)} |edges in| {len(self.edge_in)}'
 
     def __lt__(self, other):
         return self.weight < other.weight
-    #
-    # def _repr_(self):
-    #     return f'time: {self.time}, src: {self.src}, dst: {self.dst}, elev:{self.elev}, direction:{self.direction}.'
-    #
-    # def into_list(self):
-    #     return ['Elevator call', f'{self.time}', f'{self.src}', f'{self.dst}', '0', f'{self.elev}']
+
+    def __repr__(self):
+        return f'{self.id}: |edges_out| {len(self.edge_out)} |edges in| {len(self.edge_in)}'

@@ -33,22 +33,27 @@ class GraphAlgo(GraphAlgoInterface):
             return False
 
     def shortest_path(self, id1: int, id2: int) -> (float, list):
-        self.dijkstra(id1)
-        ans = []
-        length = 0
-        ans.insert(0, id2)
-        while ans[0] != id1:
-            key = self.graph.nodes[ans[0]].father
-            if key is None:
-                return float('inf'), []
-            length += self.graph.all_out_edges_of_node(key).get(ans[0])
-            ans.insert(0, key)
-        return length, ans
+        try:
+            x = self.graph.nodes[id1]
+            y = self.graph.nodes[id1]
+            self.dijkstra(id1)
+            ans = []
+            length = 0
+            ans.insert(0, id2)
+            while ans[0] != id1:
+                key = self.graph.nodes[ans[0]].father
+                if key is None:
+                    return float('inf'), []
+                length += self.graph.all_out_edges_of_node(key).get(ans[0])
+                ans.insert(0, key)
+            return length, ans
+        except:
+            return float('inf'), []
 
     def plot_graph(self) -> None:
         for node_id, node_data in self.graph.nodes.items():
             plt.plot(node_data.x, node_data.y, markersize=6, marker="o", color="red")
-            plt.text(node_data.x, node_data.y, str(node_id), color="black", fontsize=6)
+            plt.text(node_data.x, node_data.y, str(node_id), color="black", fontsize=10)
         for node_id, node_data in self.graph.nodes.items():
             for dest_node_id, edge_weight in self.graph.nodes[node_id].edge_out.items():
                 srcX = self.graph.nodes[node_id].x
@@ -123,7 +128,58 @@ class GraphAlgo(GraphAlgoInterface):
             return ans, dist_all
 
         if not self.connected:
-            return [], float('inf')
+            return self.tsp_not_connected(node_lst)
+
+    # def TSP(self, node_lst: List[int]) -> (List[int], float):
+    #     if self.graph.mc > 0:
+    #         self.connected = self.is_connected()
+    #     if not self.connected:
+    #         for node_i1 in node_lst:
+    #             self.dijkstra(node_i1)
+    #             for node_i2 in node_lst:
+    #                 if self.graph.nodes[node_i2].father is float('inf'):
+    #                     return [], float('inf')
+    #
+    #     ans = []
+    #     dist_all = 0
+    #     i_was_changed = False
+    #     node_i = node_lst[0]
+    #     next = -1
+    #     while node_lst:
+    #         short_path = float('inf')
+    #         next = -1
+    #         dist = 0
+    #         for node_j in node_lst:
+    #             if node_j != node_i:
+    #                 if not i_was_changed:
+    #                     self.dijkstra(node_i)
+    #                     i_was_changed = True
+    #                 dist = self.graph.nodes[node_j].weight
+    #                 if short_path >= dist:
+    #                     short_path = dist
+    #                     next = node_j
+    #         dist_all = dist_all + dist
+    #
+    #         path = []
+    #         path.insert(0, self.graph.nodes[next].father)
+    #         while path[0] != node_i:
+    #             key = self.graph.nodes[path[0]].father
+    #             path.insert(0, key)
+    #
+    #         ans.extend(path)
+    #         node_lst.remove(node_i)
+    #         node_i = next
+    #         i_was_changed = False
+    #     ans.append(next)
+    #     return ans, dist_all
+
+    def tsp_not_connected(self, node_lst: List[int]) -> (List[int], float):
+        for node_i in node_lst:
+            self.dijkstra(node_i)
+            for node_i in node_lst:
+                if self.graph.nodes[node_i].father is float('inf'):
+                    return [], float('inf')
+        return [], float('inf')
 
     def centerPoint(self) -> (int, float):
         if self.graph.mc > 0:
